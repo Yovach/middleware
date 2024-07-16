@@ -5,7 +5,7 @@ import type { UpgradeWebSocket, WSContext } from 'hono/ws'
 import type { WebSocket } from 'ws'
 import { WebSocketServer } from 'ws'
 import type { IncomingMessage } from 'http'
-import { CloseEvent } from './events'
+// import { CloseEvent } from './events'
 
 export interface NodeWebSocket {
   upgradeWebSocket: UpgradeWebSocket

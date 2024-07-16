@@ -13,7 +13,7 @@ describe('WebSocket helper', () => {
 
   beforeEach(async () => {
     app = new Hono()
-    ;({ injectWebSocket, upgradeWebSocket } = createNodeWebSocket({ app }))
+      ; ({ injectWebSocket, upgradeWebSocket } = createNodeWebSocket({ app }))
 
     server = await new Promise<ServerType>((resolve) => {
       const server = serve({ fetch: app.fetch, port: 3030 }, () => resolve(server))
@@ -106,6 +106,25 @@ describe('WebSocket helper', () => {
     })
 
     connections.forEach((ws) => ws.close())
+  })
+
+  // TODO: check if promise is crashing
+  it('Should not crashes', async () => {
+    const onClosePromise = new Promise<void>((resolve) =>
+      app.get(
+        '/',
+        upgradeWebSocket(() => ({
+          onClose() {
+            resolve()
+          },
+        }))
+      )
+    )
+    const ws = new WebSocket('ws://localhost:3030/')
+    await new Promise<void>((resolve) => ws.on('open', resolve))
+    expect(onClosePromise).not.toThrow()
+    ws.close()
+
   })
 
   it('Should be able to send and receive binary content with good length', async () => {
